@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+  <meta charset="utf-8">
+  <title>Riot and esri-loader</title>
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    esri-map-view {
+      height: 200px;
+      width: 75%;
+      display: flex;
+    }
+
+  </style>
+</head>
+
+<body>
+  <!-- show an <esri-map-view> for every named basemap in the ArcGIS API -->
+  <!-- see JS below for an example of passing in options via JS in addition to HTML attributes -->
+  <esri-map-view zoom="4" basemap="streets"></esri-map-view>
+  <esri-map-view zoom="4" basemap="satellite"></esri-map-view>
+  <esri-map-view zoom="4" basemap="hybrid"></esri-map-view>
+  <esri-map-view zoom="4" basemap="terrain"></esri-map-view>
+  <esri-map-view zoom="4" basemap="topo"></esri-map-view>
+  <esri-map-view zoom="4" basemap="gray"></esri-map-view>
+  <esri-map-view zoom="4" basemap="dark-gray"></esri-map-view>
+  <esri-map-view zoom="4" basemap="oceans"></esri-map-view>
+  <esri-map-view zoom="4" basemap="national-geographic"></esri-map-view>
+  <esri-map-view zoom="4" basemap="osm"></esri-map-view>
+  <esri-map-view zoom="3" basemap="dark-gray-vector"></esri-map-view>
+  <esri-map-view zoom="3" basemap="gray-vector"></esri-map-view>
+  <esri-map-view zoom="3" basemap="streets-vector"></esri-map-view>
+  <esri-map-view zoom="3" basemap="topo-vector"></esri-map-view>
+  <esri-map-view zoom="3" basemap="streets-night-vector"></esri-map-view>
+  <esri-map-view zoom="4" basemap="streets-relief-vector"></esri-map-view>
+  <esri-map-view zoom="3" basemap="streets-navigation-vector"></esri-map-view>
+
+  <!-- load dependency: riot.js and its compiler -->
+  <script src="https://unpkg.com/riot@3/riot+compiler.min.js"></script>
+
+  <!-- load dependency: esri-loader -->
+  <script src="node_modules/esri-loader/dist/umd/esri-loader.js"></script>
+
+  <!-- establish an inlined riot tag (aka: component) definition that encapsulates an ArcGIS API MapView -->
+  <script type="riot/tag">
+    <esri-map-view>
+
+      <!-- tag layout -->
+      <div ref="mapViewNode"></div>
+
+      <!-- tag style -->
+      <style>
+        .esri-view {
+          width: 100%;
+          height: 100%;
+        }
+      </style>
+
+      <!-- tag logic -->
+      // use esri-loader to bring in css required for the ArcGIS API
+      esriLoader.loadCss('https://js.arcgis.com/4.6/esri/css/view.css');
+
+      this.on('mount', function() {
+        // just to be safe, wait for riot "mount" event to fire
+        // use esri-loader to load the ArcGIS API modules for constructing a MapView instance
+        esriLoader.loadModules([
+          'esri/Map',
+          'esri/views/MapView',
+        ])
+          .then(function([Map, MapView]) {
+            new MapView({
+              container: this.refs.mapViewNode,
+              map: new Map({
+                basemap: this.opts.basemap
+              }),
+              zoom: this.opts.zoom,
+              center: this.opts.center
+            });
+          }.bind(this));
+      }.bind(this));
+    </esri-map-view>
+  </script>
+
+  <script>
+    // riot app entry point:
+    //  mount custom "<esri-map-view>" riot tags on the page
+    //  with an example of passing in some options properties in JS
+    riot.mount('esri-map-view', { center: [15, 65] });
+  </script>
+</body>
+
+</html>

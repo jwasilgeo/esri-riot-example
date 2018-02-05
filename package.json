@@ -1,0 +1,23 @@
+{
+  "name": "esri-riot-example",
+  "version": "1.0.0",
+  "description": "An example Riot application that shows how to use esri-loader to create a custom <esri-map-view> component.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jwasilgeo/esri-riot-example.git"
+  },
+  "author": "Jacob Wasilkowski",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/jwasilgeo/esri-riot-example/issues"
+  },
+  "homepage": "https://github.com/jwasilgeo/esri-riot-example#readme",
+  "dependencies": {
+    "esri-loader": "git+https://github.com/Esri/esri-loader.git#5dd1b65ebcf4cef5c5bd2ae260e41425765feff9",
+    "riot": "^3.8.1"
+  }
+}
