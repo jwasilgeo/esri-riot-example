@@ -2,7 +2,7 @@
 
 An example [Riot](http://riotjs.com/) application that shows how to use [esri-loader](https://github.com/Esri/esri-loader) to create a custom `<esri-map-view>` component.
 
-This approach demonstrates how to build a Riot-focused application with the [ArcGIS API for JavaScript](https://developers.arcgis.com/javascript/). Using [esri-loader](https://github.com/Esri/esri-loader) really makes the whole development process straightforward and enjoyable.
+This approach demonstrates how to build a Riot-focused application with the [ArcGIS API for JavaScript](https://developers.arcgis.com/javascript/). Using [esri-loader](https://github.com/Esri/esri-loader) makes the whole development process straightforward and enjoyable.
 
 You can see how it is all glued together in [`index.html`](https://github.com/jwasilgeo/esri-riot-example/blob/master/index.html).
 

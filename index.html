@@ -42,13 +42,13 @@
   <esri-map-view zoom="4" basemap="streets-relief-vector"></esri-map-view>
   <esri-map-view zoom="3" basemap="streets-navigation-vector"></esri-map-view>
 
-  <!-- load dependency: riot.js and its compiler -->
+  <!-- load js dependency: riot.js and its compiler -->
   <script src="https://unpkg.com/riot@3/riot+compiler.min.js"></script>
 
-  <!-- load dependency: esri-loader -->
-  <script src="node_modules/esri-loader/dist/umd/esri-loader.js"></script>
+  <!-- load js dependency: esri-loader -->
+  <script src="https://unpkg.com/esri-loader@2"></script>
 
-  <!-- establish an inlined riot tag (aka: component) definition that encapsulates an ArcGIS API MapView -->
+  <!-- define an inlined riot tag (aka: component) that encapsulates an instance of an ArcGIS API MapView -->
   <script type="riot/tag">
     <esri-map-view>
 
@@ -64,12 +64,16 @@
       </style>
 
       <!-- tag logic -->
+      // esri-loader is super smart will not reload duplicate js or css ArcGIS API dependencies
+
       // use esri-loader to bring in css required for the ArcGIS API
+      // (NOTE: the loadCss method is not in a released version of esri-loader yet,
+      // but it will be available very soon in an upcoming version)
       esriLoader.loadCss('https://js.arcgis.com/4.6/esri/css/view.css');
 
       this.on('mount', function() {
         // just to be safe, wait for riot "mount" event to fire
-        // use esri-loader to load the ArcGIS API modules for constructing a MapView instance
+        // use esri-loader to load the ArcGIS API modules to construct a MapView instance
         esriLoader.loadModules([
           'esri/Map',
           'esri/views/MapView',
@@ -85,12 +89,13 @@
             });
           }.bind(this));
       }.bind(this));
+
     </esri-map-view>
   </script>
 
   <script>
-    // riot app entry point:
-    //  mount custom "<esri-map-view>" riot tags on the page
+    // riot application entry point:
+    //  mount all custom "<esri-map-view>" riot tags on the page,
     //  with an example of passing in some options properties in JS
     riot.mount('esri-map-view', { center: [15, 65] });
   </script>

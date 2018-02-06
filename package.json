@@ -17,7 +17,7 @@
   },
   "homepage": "https://github.com/jwasilgeo/esri-riot-example#readme",
   "dependencies": {
-    "esri-loader": "git+https://github.com/Esri/esri-loader.git#5dd1b65ebcf4cef5c5bd2ae260e41425765feff9",
+    "esri-loader": "2.1.0",
     "riot": "^3.8.1"
   }
 }
