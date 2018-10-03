@@ -18,8 +18,8 @@
       /* this is the custom html tag/component, not a css class */
       height: 200px;
       width: 75%;
-      border: 1px solid #ff0044;
-      margin: 2.5px 0;
+      outline: 2px solid #ff0044;
+      margin: 5px 0;
     }
 
     .header {
@@ -79,7 +79,7 @@
       <code>&lt;esri-map-view zoom="4" basemap="oceans"&gt;&lt;/esri-map-view&gt;</code>
     </li>
     <li>
-      <code>&lt;esri-map-view zoom="4" basemap="streets-vector"&gt;&lt;/esri-map-view&gt;</code>
+      <code>&lt;esri-map-view rotation="180" basemap="streets-vector"&gt;&lt;/esri-map-view&gt;</code>
     </li>
     <li>
       And so many more. Take a look at
@@ -89,31 +89,31 @@
 
   <!-- show an <esri-map-view> for every named basemap in the ArcGIS API -->
   <!-- see JS below for an example of passing in options via JS in addition to HTML attributes -->
-  <esri-map-view zoom="4" basemap="streets"></esri-map-view>
-  <esri-map-view zoom="4" basemap="satellite"></esri-map-view>
-  <esri-map-view zoom="4" basemap="hybrid"></esri-map-view>
-  <esri-map-view zoom="4" basemap="terrain"></esri-map-view>
-  <esri-map-view zoom="4" basemap="topo"></esri-map-view>
-  <esri-map-view zoom="4" basemap="gray"></esri-map-view>
-  <esri-map-view zoom="4" basemap="dark-gray"></esri-map-view>
-  <esri-map-view zoom="4" basemap="oceans"></esri-map-view>
-  <esri-map-view zoom="4" basemap="national-geographic"></esri-map-view>
-  <esri-map-view zoom="4" basemap="osm"></esri-map-view>
-  <esri-map-view zoom="3" basemap="dark-gray-vector"></esri-map-view>
-  <esri-map-view zoom="3" basemap="gray-vector"></esri-map-view>
-  <esri-map-view zoom="3" basemap="streets-vector"></esri-map-view>
-  <esri-map-view zoom="3" basemap="topo-vector"></esri-map-view>
-  <esri-map-view zoom="3" basemap="streets-night-vector"></esri-map-view>
-  <esri-map-view zoom="4" basemap="streets-relief-vector"></esri-map-view>
-  <esri-map-view zoom="3" basemap="streets-navigation-vector"></esri-map-view>
+  <esri-map-view zoom="4" rotation="10" center="-18,65" basemap="streets"></esri-map-view>
+  <esri-map-view zoom="4" rotation="20" center="-18,65" basemap="satellite"></esri-map-view>
+  <esri-map-view zoom="4" rotation="30" center="-18,65" basemap="hybrid"></esri-map-view>
+  <esri-map-view zoom="4" rotation="40" center="-18,65" basemap="terrain"></esri-map-view>
+  <esri-map-view zoom="4" rotation="50" center="-18,65" basemap="topo"></esri-map-view>
+  <esri-map-view zoom="4" rotation="60" center="-18,65" basemap="gray"></esri-map-view>
+  <esri-map-view zoom="4" rotation="70" center="-18,65" basemap="dark-gray"></esri-map-view>
+  <esri-map-view zoom="4" rotation="80" center="-18,65" basemap="oceans"></esri-map-view>
+  <esri-map-view zoom="4" rotation="90" center="-18,65" basemap="national-geographic"></esri-map-view>
+  <esri-map-view zoom="4" rotation="100" center="-18,65" basemap="osm"></esri-map-view>
+  <esri-map-view zoom="3" rotation="110" center="-18,65" basemap="dark-gray-vector"></esri-map-view>
+  <esri-map-view zoom="3" rotation="120" center="-18,65" basemap="gray-vector"></esri-map-view>
+  <esri-map-view zoom="3" rotation="130" center="-18,65" basemap="streets-vector"></esri-map-view>
+  <esri-map-view zoom="4" rotation="140" center="-18,65" basemap="topo-vector"></esri-map-view>
+  <esri-map-view zoom="3" rotation="150" center="-18,65" basemap="streets-night-vector"></esri-map-view>
+  <esri-map-view zoom="4" rotation="160" center="-18,65" basemap="streets-relief-vector"></esri-map-view>
+  <esri-map-view zoom="3" rotation="170" center="-18,65" basemap="streets-navigation-vector"></esri-map-view>
 
   <!-- load js dependency: riot.js and its compiler -->
-  <script src="https://unpkg.com/riot@3/riot+compiler.min.js"></script>
+  <script src="https://unpkg.com/riot@3.12.0/riot+compiler.min.js"></script>
 
   <!-- load js dependency: esri-loader -->
-  <script src="https://unpkg.com/esri-loader@2.1.0"></script>
+  <script src="https://unpkg.com/esri-loader@2.5.0"></script>
 
-  <!-- define an inlined riot tag (aka: component) that encapsulates an instance of an ArcGIS API MapView -->
+  <!-- define an inlined riot tag (aka: component) that encapsulates an instance of an ArcGIS API v4 MapView -->
   <script type="riot/tag">
     <esri-map-view>
 
@@ -129,38 +129,56 @@
       </style>
 
       <!-- tag logic -->
-      // esri-loader is super smart will not reload duplicate js or css ArcGIS API dependencies
+      // esri-loader is super smart and will not reload duplicate JS or CCS dependencies from the ArcGIS API
 
-      // use esri-loader to bring in css required for the ArcGIS API
-      esriLoader.loadCss('https://js.arcgis.com/4.6/esri/css/view.css');
+      // use esri-loader to load the CSS required by the ArcGIS API
+      esriLoader.loadCss('https://js.arcgis.com/4.9/esri/css/view.css');
 
       this.on('mount', function() {
-        // just to be safe, wait for riot "mount" event to fire
-        // use esri-loader to load the ArcGIS API modules to construct a MapView instance
+        // we need access to the tag's DOM element in the JS logic to construct a MapView instance
+        // see "ref" attribute in "tag-layout" above
+        // the corresponding refs JS object is only populated after the "mount" event
+        var mapViewNode = this.refs.mapViewNode;
+
+        // this.opts is an object of options properties set in either
+        // HTML above or riot application main JS entry point below
+        var basemap = this.opts.basemap || 'streets';
+        var zoom = this.opts.zoom || 1;
+        var center = this.opts.center ? this.opts.center.split(',') : [0, 0];
+        var rotation = this.opts.rotation || 0;
+
+        // use esri-loader to load the ArcGIS API modules required to construct a MapView instance
+        var esriLoaderOptions = {
+          url: 'https://js.arcgis.com/4.9/'
+        };
+
         esriLoader.loadModules([
           'esri/Map',
           'esri/views/MapView',
-        ])
+        ], esriLoaderOptions)
           .then(function([Map, MapView]) {
             new MapView({
-              container: this.refs.mapViewNode,
+              container: mapViewNode,
               map: new Map({
-                basemap: this.opts.basemap || 'streets'
+                basemap: basemap
               }),
-              zoom: this.opts.zoom || 1,
-              center: this.opts.center || [0, 0]
+              zoom: zoom,
+              center: center,
+              rotation: rotation,
+              ui: {
+                components: ['attribution', 'zoom', 'compass']
+              }
             });
-          }.bind(this));
-      }.bind(this));
+          });
+      });
 
     </esri-map-view>
   </script>
 
   <script>
-    // riot application entry point:
-    //  mount all custom "<esri-map-view>" riot tags on the page,
-    //  with an example of passing in some options properties in JS
-    riot.mount('esri-map-view', { center: [15, 65] });
+    // riot application main entry point:
+    // mount all custom "<esri-map-view>" riot tags on the page
+    riot.mount('esri-map-view');
   </script>
 </body>
 
